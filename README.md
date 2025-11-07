@@ -1,8 +1,9 @@
 # Feedback Collection System
 
-A lightweight Django application for collecting, managing, and analyzing user feedback. Perfect for gathering customer insights, product reviews, or survey responses with a clean, intuitive interface.
+A modern full-stack application for collecting, managing, and analyzing user feedback. Built with Django REST Framework backend and React frontend.
 
 ![Django](https://img.shields.io/badge/Django-4.2+-092E20?style=flat-square&logo=django)
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=flat-square&logo=react)
 ![Python](https://img.shields.io/badge/Python-3.9+-3776ab?style=flat-square&logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
@@ -12,22 +13,64 @@ A lightweight Django application for collecting, managing, and analyzing user fe
 - Create, read, update, and delete feedback entries
 - Collect user details (name, email, rating 1-5, message)
 - Paginated feedback list for easy browsing
-- Filter by name and rating using query parameters
-- Responsive design with Bootstrap 5
+- Filter by name and rating
+- RESTful API with Django REST Framework
+- Modern React frontend with React Router
 
 🎨 **User Experience**
-- Clean, intuitive interface
-- Mobile-friendly layout
+- Clean, intuitive interface with Bootstrap 5
+- Mobile-friendly responsive layout
 - Form validation and error handling
 - Confirmation dialogs for destructive actions
+- Smooth animations and transitions
+
+## Project Structure
+
+```
+Feedback-Collection-System/
+├── manage.py                          # Django management script
+├── requirements.txt                   # Python dependencies
+├── feedback_project/                  # Django project configuration
+│   ├── settings.py                    # Project settings
+│   ├── urls.py                        # URL routing
+│   └── wsgi.py                        # WSGI application
+├── feedback_app/                      # Django application
+│   ├── models.py                      # Database models
+│   ├── views.py                       # Template-based views (legacy)
+│   ├── api_views.py                   # REST API viewsets
+│   ├── serializers.py                 # API serializers
+│   ├── api_urls.py                    # API URL routing
+│   ├── urls.py                        # Template URL patterns
+│   └── migrations/                    # Database migrations
+└── frontend/                          # React frontend application
+    ├── package.json                   # Node.js dependencies
+    ├── public/                        # Static files
+    │   └── index.html                 # HTML template
+    └── src/                           # React source code
+        ├── App.js                     # Main app component
+        ├── index.js                   # Entry point
+        ├── index.css                  # Global styles
+        ├── components/                # Reusable components
+        │   ├── Navbar.js
+        │   └── Footer.js
+        ├── pages/                     # Page components
+        │   ├── FeedbackList.js
+        │   ├── FeedbackDetail.js
+        │   ├── FeedbackForm.js
+        │   └── FeedbackDelete.js
+        └── services/                  # API services
+            └── api.js
+```
 
 ## Quick Start
 
 ### Prerequisites
 - Python 3.9+
+- Node.js 16+ and npm
+- MySQL (or SQLite for development)
 - pip and virtualenv
 
-### Installation
+### Backend Setup (Django)
 
 1. **Clone the repository**
    ```bash
@@ -49,23 +92,19 @@ A lightweight Django application for collecting, managing, and analyzing user fe
    source .venv/bin/activate
    ```
 
-3. **Install dependencies**
+3. **Install Python dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Configure the database**
    
-   Update `feedback_project/settings.py` with your database credentials. The project defaults to MySQL; adjust the `DATABASES` setting as needed:
+   Update `feedback_project/settings.py` with your database credentials. For development, you can use SQLite:
    ```python
    DATABASES = {
        'default': {
-           'ENGINE': 'django.db.backends.mysql',
-           'NAME': 'feedback_db',
-           'USER': 'your_user',
-           'PASSWORD': 'your_password',
-           'HOST': 'localhost',
-           'PORT': '3306',
+           'ENGINE': 'django.db.backends.sqlite3',
+           'NAME': BASE_DIR / 'db.sqlite3',
        }
    }
    ```
@@ -75,60 +114,151 @@ A lightweight Django application for collecting, managing, and analyzing user fe
    python manage.py migrate
    ```
 
-6. **Start the development server**
+6. **Create a superuser (optional)**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. **Start the Django development server**
    ```bash
    python manage.py runserver
    ```
+   
+   The API will be available at `http://127.0.0.1:8000/api/`
 
-7. **Open your browser**
-   Navigate to `http://127.0.0.1:8000/` and start collecting feedback!
+### Frontend Setup (React)
 
-## Project Structure
+1. **Navigate to the frontend directory**
+   ```bash
+   cd frontend
+   ```
 
+2. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the React development server**
+   ```bash
+   npm start
+   ```
+   
+   The React app will open at `http://localhost:3000`
+
+4. **Configure API URL (if needed)**
+   
+   Create a `.env` file in the `frontend` directory:
+   ```env
+   REACT_APP_API_URL=http://localhost:8000/api
+   ```
+
+## API Endpoints
+
+The Django REST Framework provides the following endpoints:
+
+- `GET /api/feedback/` - List all feedback (with pagination, filtering, and search)
+- `GET /api/feedback/{id}/` - Get a specific feedback entry
+- `POST /api/feedback/` - Create a new feedback entry
+- `PUT /api/feedback/{id}/` - Update a feedback entry
+- `DELETE /api/feedback/{id}/` - Delete a feedback entry
+
+### Query Parameters
+
+- `page` - Page number for pagination
+- `name` - Filter by name (partial match)
+- `rating` - Filter by rating (exact match)
+- `search` - Search in name, email, and message fields
+- `ordering` - Order by field (e.g., `-created_at`, `rating`, `name`)
+
+### Example API Calls
+
+```bash
+# Get all feedback
+curl http://localhost:8000/api/feedback/
+
+# Filter by rating
+curl http://localhost:8000/api/feedback/?rating=5
+
+# Search by name
+curl http://localhost:8000/api/feedback/?name=John
+
+# Create feedback
+curl -X POST http://localhost:8000/api/feedback/ \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","message":"Great service!","rating":5}'
 ```
-Feedback-Collection-System/
-├── manage.py                          # Django management script
-├── requirements.txt                   # Project dependencies
-├── feedback_project/                  # Django project configuration
-│   ├── settings.py                    # Project settings
-│   ├── urls.py                        # URL routing
-│   └── wsgi.py                        # WSGI application
-├── feedback_app/                      # Main application
-│   ├── migrations/                    # Database migrations
-│   ├── templates/feedback_app/        # HTML templates
-│   │   ├── base.html                  # Base template with Bootstrap
-│   │   ├── feedback_list.html         # List view with pagination
-│   │   ├── feedback_detail.html       # Feedback detail view
-│   │   ├── feedback_form.html         # Create/edit form
-│   │   └── feedback_delete.html       # Confirmation delete
-│   ├── static/feedback_app/css/       # Custom stylesheets
-│   │   └── styles.css                 # Application styles
-│   ├── models.py                      # Database models
-│   ├── views.py                       # View controllers
-│   ├── forms.py                       # Django forms
-│   ├── urls.py                        # App URL patterns
-│   └── admin.py                       # Django admin configuration
-└── README.md                          # This file
+
+## Development
+
+### Running Both Servers
+
+You need to run both the Django backend and React frontend:
+
+**Terminal 1 - Django:**
+```bash
+python manage.py runserver
 ```
 
-## Usage
+**Terminal 2 - React:**
+```bash
+cd frontend
+npm start
+```
 
-### Collecting Feedback
-1. Click **"Add Feedback"** on the homepage
-2. Fill in your details (name, email, message)
-3. Select a rating from 1-5 stars
-4. Submit the form
+### Code Quality
 
-### Managing Feedback
-- **View all feedback** — Browse the paginated list on the homepage
-- **Filter feedback** — Use query parameters: `?name=John&rating=5`
-- **Edit feedback** — Click the edit icon to modify an entry
-- **Delete feedback** — Click delete and confirm removal
+**Python:**
+```bash
+pip install flake8 pylint
+flake8 .
+pylint feedback_app/
+```
+
+**JavaScript/React:**
+```bash
+cd frontend
+npm run build  # Check for build errors
+```
+
+## Production Deployment
+
+### Backend
+
+1. **Security Settings**
+   ```python
+   DEBUG = False
+   SECRET_KEY = os.environ.get('SECRET_KEY')
+   ALLOWED_HOSTS = ['yourdomain.com']
+   CORS_ALLOWED_ORIGINS = ['https://yourdomain.com']
+   ```
+
+2. **Static Files**
+   ```bash
+   python manage.py collectstatic --noinput
+   ```
+
+3. **Use Gunicorn**
+   ```bash
+   pip install gunicorn
+   gunicorn feedback_project.wsgi:application --bind 0.0.0.0:8000
+   ```
+
+### Frontend
+
+1. **Build the React app**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. **Serve with Nginx or serve the `build` folder with your web server**
+
+3. **Update API URL**
+   Set `REACT_APP_API_URL` environment variable to your production API URL
 
 ## Configuration
 
 ### Database Setup
-By default, this project uses MySQL. To use a different database:
 
 **SQLite (development):**
 ```python
@@ -140,121 +270,47 @@ DATABASES = {
 }
 ```
 
-**PostgreSQL:**
+**MySQL:**
 ```python
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'feedback_db',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
+        'USER': 'your_user',
+        'PASSWORD': 'your_password',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 ```
 
 ### Environment Variables
-For production, store sensitive data in a `.env` file:
+
+Create a `.env` file for sensitive data:
+
 ```bash
-SECRET_KEY=your-secret-key
-DEBUG=False
-ALLOWED_HOSTS=yourdomain.com
-DB_ENGINE=django.db.backends.mysql
-DB_NAME=feedback_db
-DB_USER=root
-DB_PASSWORD=password
-DB_HOST=localhost
+DJANGO_SECRET_KEY=your-secret-key
+DJANGO_DB_NAME=feedback_db
+DJANGO_DB_USER=root
+DJANGO_DB_PASSWORD=password
+DJANGO_DB_HOST=localhost
+DJANGO_DB_PORT=3306
 ```
 
-Install `python-dotenv` and load in `settings.py`:
-```python
-from dotenv import load_dotenv
-load_dotenv()
+## Technologies Used
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-```
+### Backend
+- **Django 4.2+** - Web framework
+- **Django REST Framework** - REST API framework
+- **django-cors-headers** - CORS handling
+- **MySQL/SQLite** - Database
 
-## Styling
-
-The project uses **Bootstrap 5** for responsive layout and components. Custom styling is centralized in:
-- `feedback_app/static/feedback_app/css/styles.css`
-
-Templates inherit from `feedback_app/templates/feedback_app/base.html`, which loads Bootstrap, Google Fonts, and project styles.
-
-## Development
-
-### Running Tests (Coming Soon)
-```bash
-python manage.py test feedback_app
-```
-
-### Code Quality
-Install and run linters:
-```bash
-pip install flake8 pylint
-flake8 .
-pylint feedback_app/
-```
-
-## Production Deployment
-
-Before deploying to production:
-
-1. ✅ **Security Settings**
-   ```python
-   DEBUG = False
-   SECRET_KEY = 'your-secure-random-key'
-   ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']
-   CSRF_TRUSTED_ORIGINS = ['https://yourdomain.com']
-   ```
-
-2. ✅ **Database**
-   - Use environment variables for credentials
-   - Set up proper backups
-   - Use a production-grade database (PostgreSQL recommended)
-
-3. ✅ **Static Files**
-   ```bash
-   python manage.py collectstatic --noinput
-   ```
-
-4. ✅ **HTTPS & Security Headers**
-   - Configure SSL/TLS certificates
-   - Enable `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`, etc.
-
-5. ✅ **Web Server**
-   - Use Gunicorn or uWSGI with Nginx reverse proxy
-   - Example: `gunicorn feedback_project.wsgi:application`
-
-## Docker Support (Optional)
-
-Create a `Dockerfile` for containerized deployment:
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["gunicorn", "feedback_project.wsgi:application", "--bind", "0.0.0.0:8000"]
-```
-
-Build and run:
-```bash
-docker build -t feedback-app .
-docker run -p 8000:8000 feedback-app
-```
-
-## Roadmap
-
-- [ ] Unit and integration test suite with GitHub Actions CI/CD
-- [ ] User authentication and role-based access control
-- [ ] Feedback analytics dashboard (charts, sentiment analysis)
-- [ ] Email notifications for new feedback
-- [ ] CSV/PDF export functionality
-- [ ] Docker Compose setup for local development
-- [ ] API endpoints (Django REST Framework)
+### Frontend
+- **React 18.2** - UI library
+- **React Router 6** - Client-side routing
+- **Axios** - HTTP client
+- **Bootstrap 5** - CSS framework
+- **Bootstrap Icons** - Icon library
 
 ## Contributing
 
@@ -274,8 +330,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 Found a bug or have a suggestion? Please open an [issue](https://github.com/Akanksha-Saini-11/Feedback-Collection-System/issues) on GitHub.
 
-For questions, feel free to reach out or check the [Django documentation](https://docs.djangoproject.com/).
-
 ---
 
-**Built with ❤️ using Django and Bootstrap**
+**Built with ❤️ using Django REST Framework and React**
