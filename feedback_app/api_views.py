@@ -1,6 +1,4 @@
 from rest_framework import viewsets, filters
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from .models import Feedback
 from .serializers import FeedbackSerializer
 

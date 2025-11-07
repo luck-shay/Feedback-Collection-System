@@ -22,9 +22,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "feedback_app",
-     "crispy_forms",
-     'widget_tweaks',
-
+    "crispy_forms",
+    "widget_tweaks",
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
