@@ -72,6 +72,17 @@
     min-height: 120px;
   }
 
+  /* Center the input/select/textarea boxes within the card so the form looks balanced */
+  .feedback-card form input[type="text"],
+  .feedback-card form input[type="email"],
+  .feedback-card form select,
+  .feedback-card form textarea {
+    display: block;
+    margin: 0 auto; /* center horizontally */
+    width: 100%;
+    max-width: 520px; /* keeps the boxes a comfortable width on large cards */
+  }
+
   .btn-submit {
     background: linear-gradient(90deg, #667eea, #764ba2);
     border: none;
